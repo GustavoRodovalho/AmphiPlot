@@ -27,22 +27,10 @@ class DataTab:
 
         st.success("File loaded successfully.")
 
-        # Show original file
-        st.subheader("Original File")
-
         standardized_df = define_structure(df)
 
         # Run calculations
-        st.subheader("Calculations")
-
-        st.markdown("""First, we assume there is no Fe_2O_3 content and we must distribute the total content of Fe, indicated in the FeO content. For that, we perform 4 different normalizations for the following scenarios:
-        
-        - All Fe is Fe$^{2+}$
-        - Minimum Fe$^{3+}$ content
-        - Maximum Fe$^{3+}$ content
-        - Mean Fe$^{3+}$ content
-        """
-        )
+        st.subheader("🧮 Calculations")
 
         if st.button(
             "Run Calculations",

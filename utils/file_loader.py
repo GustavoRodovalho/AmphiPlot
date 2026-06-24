@@ -122,7 +122,7 @@ def define_structure(df):
         oxides_slice = df.loc[selected_oxides,:]
 
     # -----------------------------------------
-    # 2. Sample location (optional)
+    # 2. Sample location
     # -----------------------------------------
 
     st.markdown("Sample names")
