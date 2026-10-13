@@ -81,13 +81,13 @@ def define_structure(df):
     st.dataframe(df, use_container_width=True)
 
     # -----------------------------------------
-    # 1. Oxide location
+    # 1. Oxides/elements location
     # -----------------------------------------
 
-    st.markdown("Oxide location")
+    st.markdown("Oxides/elements location")
 
     oxide_mode = st.radio(
-        "Where are the oxides names?",
+        "Where are the oxides/elements names?",
         ["Columns (headers)", "Rows (indices)"]
     )
 
@@ -99,7 +99,7 @@ def define_structure(df):
         ]
 
         selected_oxides = st.multiselect(
-            "Detected oxide columns (adjust if needed)",
+            "Detected oxides/elements columns (adjust if needed)",
             df.columns,
             default=oxide_candidates
         )
@@ -114,7 +114,7 @@ def define_structure(df):
         ]
 
         selected_oxides = st.multiselect(
-            "Detected oxide rows (adjust if needed)",
+            "Detected oxides/elements rows (adjust if needed)",
             df.index,
             default=oxide_candidates
         )
