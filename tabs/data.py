@@ -80,9 +80,17 @@ class DataTab:
                         elem_mols, oxy_mols
                     )
 
+                # Classify amphiboles for each scenario
+                with st.spinner("Classifying amphiboles..."):
+                    scenarios = calculator.classify(scenarios)
+
+                # Store classified results
                 st.session_state["amphibole_results"] = scenarios
 
-                st.success("Calculations completed successfully.")
+                st.success(
+                    "Calculations and classifications "
+                    "completed successfully."
+                )
 
             except Exception as e:
                 st.session_state.pop("amphibole_results", None)
@@ -112,15 +120,26 @@ class DataTab:
         for (name, result_df), tab in zip(scenarios.items(), tabs):
 
             with tab:
+
                 st.caption(
                     f"{len(result_df)} samples | "
                     f"{len(result_df.columns)} variables"
                 )
 
+                # ----------------------------------------
+                # Complete structural formula
+                # ----------------------------------------
+
+                st.markdown("#### Structural Formula and Classification")
+
                 st.dataframe(
                     result_df,
                     use_container_width=True
                 )
+
+                # ----------------------------------------
+                # Export scenario
+                # ----------------------------------------
 
                 st.download_button(
                     label="Download CSV",
@@ -131,8 +150,6 @@ class DataTab:
                 )
 
         # Export all scenarios to Excel
-        st.divider()
-
         st.download_button(
             label="Download All Scenarios (Excel)",
             data=self.create_excel(scenarios),

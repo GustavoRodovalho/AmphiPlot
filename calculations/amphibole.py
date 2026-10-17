@@ -320,6 +320,55 @@ class AmphiboleCalculator:
             "scenario_2_mean": scenario_2_mean.round(3)
         }
 
+    @staticmethod
+    def format_structural_formula(formula_df, decimals=2):
+        """Build a site-resolved amphibole formula for each sample."""
+
+        sites = ["A", "B", "C", "T", "OH"]
+
+        def format_element(element, value):
+
+            if pd.isna(value):
+                return ""
+
+            # Round to the requested precision
+            value = round(float(value), decimals)
+
+            # Ignore elements rounded to zero
+            if value == 0:
+                return ""
+
+            # Remove trailing zeros and decimal point
+            formatted_value = (
+                f"{value:.{decimals}f}"
+                .rstrip("0")
+                .rstrip(".")
+            )
+
+            return f"{element}{formatted_value}"
+
+        def format_sample(row):
+            parts = []
+
+            for site in sites:
+                site_columns = [
+                    col for col in formula_df.columns
+                    if isinstance(col, tuple)
+                    and len(col) == 2
+                    and col[0] == site
+                ]
+
+                elements = "".join(
+                    format_element(element, row[(site, element)])
+                    for _, element in site_columns
+                )
+
+                if elements:
+                    parts.append(f"{site}({elements})")
+
+            return "".join(parts)
+
+        return formula_df.apply(format_sample, axis=1)
 
     def classify(self, scenarios):
         """
@@ -384,7 +433,12 @@ class AmphiboleCalculator:
             result[("Classification", "Group")] = np.select(
                 conditions,
                 groups,
-                default=""
+                default="Unclassified"
+            )
+
+            # Get the formula of each sample
+            result[("Classification", "Formula")] = (
+                self.format_structural_formula(result)
             )
 
             classified_scenarios[scenario_name] = result

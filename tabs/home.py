@@ -34,13 +34,162 @@ class HomeTab:
         the current amphibole nomenclature recognizes
         eight major amphibole groups based on site occupancy and composition.
 
-        The four most common groups are:
+        The five most common groups are:
 
-        - Fe–Mg–Mn amphiboles
+        - Mg-Fe-Mn-Li amphiboles
+        - Na-Ca-Mg-Fe-Mn-Li amphiboles
         - Calcic amphiboles
         - Sodic-calcic amphiboles
         - Sodic amphiboles
+        """)
 
+        st.subheader("Classification Flowchart")
+
+        st.markdown("""
+        The following flowchart summarizes the classification rules
+        implemented in AmphiPlot. The classification is based on the
+        occupancy of the **B crystallographic site**, expressed in
+        atoms per formula unit (apfu).
+        """)
+
+        flowchart = """
+        digraph AmphiboleClassification {
+
+            graph [
+                rankdir=TB,
+                bgcolor="transparent",
+                nodesep=0.4,
+                ranksep=0.55
+            ];
+
+            node [
+                shape=box,
+                style="rounded,filled",
+                fillcolor="#EAF2F8",
+                color="#7F8C8D",
+                fontname="Arial",
+                fontsize=11
+            ];
+
+            edge [
+                fontname="Arial",
+                fontsize=10
+            ];
+
+            start [label="B-site cation occupancies"];
+
+            l_high [
+                label="L ≥ 1.5?",
+                shape=diamond,
+                fillcolor="#FFF2CC"
+            ];
+
+            l_low [
+                label="L ≤ 0.5?",
+                shape=diamond,
+                fillcolor="#FFF2CC"
+            ];
+
+            ca_na_high [
+                label="(Ca + Na) ≥ 1.0?",
+                shape=diamond,
+                fillcolor="#FFF2CC"
+            ];
+
+            na_low [
+                label="Na < 0.5?",
+                shape=diamond,
+                fillcolor="#FFF2CC"
+            ];
+
+            na_mid [
+                label="Na < 1.5?",
+                shape=diamond,
+                fillcolor="#FFF2CC"
+            ];
+
+            mixed [
+                label="0.5 < L < 1.5\\nAND\\n0.5 ≤ (Ca + Na) ≤ 1.5?",
+                shape=diamond,
+                fillcolor="#FFF2CC"
+            ];
+
+            mg_group [
+                label="Mg-Fe-Mn-Li",
+                fillcolor="#D5F5E3"
+            ];
+
+            calcic [
+                label="Calcic",
+                fillcolor="#D5F5E3"
+            ];
+
+            sodic_calcic [
+                label="Sodic-calcic",
+                fillcolor="#D5F5E3"
+            ];
+
+            sodic [
+                label="Sodic",
+                fillcolor="#D5F5E3"
+            ];
+
+            mixed_group [
+                label="Na-Ca-Mg-Fe-Mn-Li",
+                fillcolor="#D5F5E3"
+            ];
+
+            unclassified [
+                label="Unclassified",
+                fillcolor="#FADBD8"
+            ];
+
+            start -> l_high;
+
+            l_high -> mg_group [label="Yes"];
+            l_high -> l_low [label="No"];
+
+            l_low -> ca_na_high [label="Yes"];
+            l_low -> mixed [label="No"];
+
+            ca_na_high -> na_low [label="Yes"];
+            ca_na_high -> unclassified [label="No"];
+
+            na_low -> calcic [label="Yes"];
+            na_low -> na_mid [label="No"];
+
+            na_mid -> sodic_calcic [label="Yes"];
+            na_mid -> sodic [label="No"];
+
+            mixed -> mixed_group [label="Yes"];
+            mixed -> unclassified [label="No"];
+        }
+        """
+
+        # Center the flowchart and reduce its width
+        left, center, right = st.columns([1, 2, 1])
+
+        with center:
+            st.graphviz_chart(
+                flowchart,
+                use_container_width=True,
+            )
+
+        st.markdown(r"""
+        **Classification parameters**
+
+        - $L_B = Li_B + Mn^{2+}_B + Fe^{2+}_B + Co_B + Ni_B + Zn_B + Mg_B$
+        - $(Ca+Na)_B = Ca_B + Na_B$
+        - $Na_B$ = sodium occupancy in the B site
+
+        The decision sequence follows the classification conditions
+        implemented in `AmphiboleCalculator.classify()`.
+
+        Samples that do not satisfy any of the five group definitions
+        are assigned to the **Unclassified** category.
+        """)
+
+        st.markdown("""
         ## Main Features
 
         AmphiPlot provides:
@@ -49,7 +198,7 @@ class HomeTab:
         - Cation normalization
         - Site allocation
         - Amphibole classification
-        - Geochemical diagrams
+        - Simple geochemical diagrams
         - Export of processed results
 
         ## Reference
