@@ -154,6 +154,8 @@ https://doi.org/10.2138/am.2012.4276
 
 ## License
 
-AmphiPlot is distributed under the MIT License.
+AmphiPlot is available for academic, educational, and non-commercial research use only.
 
-See the [LICENSE](LICENSE) file for details.
+Commercial use, including paid consulting, commercial research, and integration into commercial products or services, requires prior written authorization from the copyright holder.
+
+See the LICENSE file for the complete terms.
