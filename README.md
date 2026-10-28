@@ -145,28 +145,6 @@ The application can be deployed from a GitHub repository using
 Ensure that `requirements.txt` lists the third-party Python dependencies
 used by the project.
 
-## Screenshots
-
-Store the five screenshots in an `images/` directory at the root of the
-repository:
-
-``` text
-AmphiPlot/
-├── README.md
-├── main.py
-├── requirements.txt
-└── images/
-    ├── figure1_homepage.png
-    ├── figure2_data_upload.png
-    ├── figure3_structural_formula.png
-    ├── figure4_plot_settings.png
-    └── figure5_diagram_settings.png
-```
-
-The screenshot paths in this README are relative to the repository root.
-GitHub will render them automatically after the files are committed with
-these names.
-
 ## Scientific reference
 
 Hawthorne, F. C., Oberti, R., Harlow, G. E., Maresch, W. V., Martin, R.
