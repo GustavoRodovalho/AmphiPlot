@@ -1,4 +1,6 @@
 import streamlit as st
+from utils.file_loader import EXPECTED_OXIDES
+import pandas as pd
 
 class HomeTab:
 
@@ -188,6 +190,75 @@ class HomeTab:
         Samples that do not satisfy any of the five group definitions
         are assigned to the **Unclassified** category.
         """)
+
+        # ============================================================
+        # INPUT DATA FORMAT
+        # ============================================================
+
+        st.header("Input Data Format")
+
+        st.markdown("""
+        AmphiPlot accepts geochemical data obtained from
+        **Electron Probe Micro-Analyzer (EPMA)** analyses.
+
+        The uploaded CSV or Excel file should follow these conventions:
+
+        - **Rows/columns:** Individual amphibole analyses (samples) and oxide or element concentrations.
+        - **Units:** Weight percent (wt.%).
+        - **Oxides/element names:** Use the exact oxide/element names listed below.
+        - **Missing measurements:** Leave cells empty if an oxide was not measured.
+
+        Fluorine (**F**) and chlorine (**Cl**) should be reported
+        as elemental weight percentages rather than oxides.
+
+        The expected oxide/element column names are:
+        """)
+
+        # Display expected columns
+        st.code(
+            ", ".join(EXPECTED_OXIDES),
+            language=None
+        )
+
+        # ============================================================
+        # EXAMPLE CSV TABLE
+        # ============================================================
+
+        st.subheader("Example Input Table")
+
+        # Example data structure
+        example_df = pd.DataFrame(
+            0.0,
+            index=["Sample_1", "Sample_2", "Sample_3"],
+            columns=EXPECTED_OXIDES
+        )
+
+        example_df.index.name = "Sample"
+
+        st.dataframe(
+            example_df,
+            width="stretch"
+        )
+
+        st.caption(
+            "Illustrative template showing the expected column names. "
+            "Zero values are placeholders, not actual EPMA measurements."
+        )
+
+        # ============================================================
+        # DOWNLOAD CSV TEMPLATE
+        # ============================================================
+
+        st.download_button(
+            label="Download CSV Template",
+            data=example_df.to_csv().encode("utf-8"),
+            file_name="amphiplot_template.csv",
+            mime="text/csv"
+        )
+
+        # ============================================================
+        # MAIN FEATURES AND REFERENCE
+        # ============================================================
 
         st.markdown("""
         ## Main Features
