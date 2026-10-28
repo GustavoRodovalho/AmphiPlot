@@ -154,5 +154,6 @@ https://doi.org/10.2138/am.2012.4276
 
 ## License
 
-See the repository's `LICENSE` file, if provided, for usage and
-redistribution terms.
+AmphiPlot is distributed under the MIT License.
+
+See the [LICENSE](LICENSE) file for details.
