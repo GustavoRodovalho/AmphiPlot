@@ -88,6 +88,39 @@ class PlotsTab:
         )
 
     @staticmethod
+    def draw_classification_grid(ax):
+        """Draw the seven user-defined Si–Mg# fields."""
+        line_style = dict(color="0.45", linewidth=1.0, zorder=1)
+
+        # Vertical boundaries and Mg# = 0.5 across all fields
+        ax.plot([6.5, 6.5], [0, 1], **line_style)
+        ax.plot([7.5, 7.5], [0, 1], **line_style)
+        ax.plot([5.5, 8.1], [0.5, 0.5], **line_style)
+
+        # Mg# = 0.9 only in the Si > 7.5 fields
+        ax.plot([7.5, 8.1], [0.9, 0.9], **line_style)
+
+        fields = [
+            ("Tremolite", 7.8, 0.95),
+            ("Actinolite", 7.8, 0.70),
+            ("Fe-Actinolite", 7.8, 0.25),
+            ("Mg-Hornblende", 7.0, 0.75),
+            ("Fe-Hornblende", 7.0, 0.25),
+            ("Tschermakite", 6.0, 0.75),
+            ("Fe-Tschermakite", 6.0, 0.25),
+        ]
+
+        for name, x, y in fields:
+            ax.text(
+                x, y, name,
+                ha="center", va="center",
+                fontsize=8, color="0.25",
+                bbox=dict(facecolor="white", alpha=0.65,
+                          edgecolor="none", pad=1.5),
+                zorder=2,
+            )
+
+    @staticmethod
     def create_scatter(
         df,
         x,
@@ -97,11 +130,18 @@ class PlotsTab:
         title,
         show_labels=False,
         show_formula=False,
-        show_legend=False
+        show_legend=False,
+        show_classification_grid=False,
+        aspect_ratio=1.3
     ):
         """Create a scatter plot colored by amphibole classification."""
 
-        fig, ax = plt.subplots(figsize=(9, 7))
+        fig_height = 7
+        fig_width = fig_height * aspect_ratio
+
+        fig, ax = plt.subplots(
+            figsize=(fig_width, fig_height)
+        )
 
         x_values = pd.to_numeric(x, errors="coerce")
         y_values = pd.to_numeric(y, errors="coerce")
@@ -113,6 +153,9 @@ class PlotsTab:
         )
 
         valid = x_values.notna() & y_values.notna()
+
+        if show_classification_grid:
+            PlotsTab.draw_classification_grid(ax)
 
         for group in groups[valid].unique():
 
@@ -190,8 +233,14 @@ class PlotsTab:
             ymin, ymax = valid_y.min(), valid_y.max()
             xpad = max((xmax - xmin) * 0.05, 0.10)
             ypad = max((ymax - ymin) * 0.06, 0.05)
-            ax.set_xlim(xmin - xpad, xmax + xpad)
-            ax.set_ylim(ymin - ypad, ymax + ypad)
+            if show_classification_grid:
+                # Preserve the full classification grid and any outlying data.
+                ax.set_xlim(max(8.1, xmax + xpad), min(5.5, xmin - xpad))
+                ax.set_ylim(min(0.0, ymin - ypad), max(1.0, ymax + ypad))
+            else:
+                # Reverse the Si axis for both diagrams.
+                ax.set_xlim(xmax + xpad, xmin - xpad)
+                ax.set_ylim(ymin - ypad, ymax + ypad)
 
         ax.grid(alpha=0.2)
 
@@ -363,6 +412,13 @@ class PlotsTab:
 
         diagram_config = self.DIAGRAMS[diagram]
 
+        show_classification_grid = False
+        if diagram == "Si vs Mg/(Mg + Fe²⁺)":
+            show_classification_grid = st.checkbox(
+                "Show calcic amphibole classification",
+                value=False,
+            )
+
         show_labels = st.checkbox(
             "Show sample labels",
             value=False,
@@ -376,6 +432,14 @@ class PlotsTab:
         show_legend = st.checkbox(
             "Show legend",
             value=False,
+        )
+
+        aspect_ratio = st.slider(
+            "Plot width/height ratio",
+            min_value=1.0,
+            max_value=3.0,
+            value=1.3,
+            step=0.1,
         )
 
         # ----------------------------------------
@@ -414,7 +478,9 @@ class PlotsTab:
             title=diagram,
             show_labels=show_labels,
             show_formula=show_formula,
-            show_legend=show_legend
+            show_legend=show_legend,
+            show_classification_grid=show_classification_grid,
+            aspect_ratio=aspect_ratio
         )
 
         st.subheader("Diagram")
@@ -437,7 +503,7 @@ class PlotsTab:
                 data=self.figure_to_bytes(fig, "png"),
                 file_name=f"{filename}.png",
                 mime="image/png",
-                use_container_width=True,
+                width='stretch',
             )
 
         with col2:
@@ -446,7 +512,7 @@ class PlotsTab:
                 data=self.figure_to_bytes(fig, "svg"),
                 file_name=f"{filename}.svg",
                 mime="image/svg+xml",
-                use_container_width=True,
+                width='stretch',
             )
 
         plt.close(fig)

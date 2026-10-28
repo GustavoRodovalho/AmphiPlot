@@ -172,7 +172,7 @@ class HomeTab:
         with center:
             st.graphviz_chart(
                 flowchart,
-                use_container_width=True,
+                width='stretch',
             )
 
         st.markdown(r"""

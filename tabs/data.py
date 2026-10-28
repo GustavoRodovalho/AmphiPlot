@@ -134,7 +134,7 @@ class DataTab:
 
                 st.dataframe(
                     result_df,
-                    use_container_width=True
+                    width='stretch',
                 )
 
                 # ----------------------------------------

@@ -78,7 +78,7 @@ def define_structure(df):
     st.subheader("📊 Data Structure Definition")
 
     st.write("Preview of uploaded data:")
-    st.dataframe(df, use_container_width=True)
+    st.dataframe(df, width='stretch')
 
     # -----------------------------------------
     # 1. Oxides/elements location
@@ -171,9 +171,9 @@ def define_structure(df):
     st.markdown("Structured dataset:")
 
     if oxide_mode == "Columns (headers)":
-        st.dataframe(samples_slice, use_container_width=True)
+        st.dataframe(samples_slice, width='stretch')
         return samples_slice
     
     else:
-        st.dataframe(samples_slice.T, use_container_width=True)
+        st.dataframe(samples_slice.T, width='stretch')
         return samples_slice.T
